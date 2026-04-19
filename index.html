@@ -280,21 +280,50 @@
       inset: 0;
       z-index: 1000;
       background: rgba(0, 0, 0, .88);
+      overflow: hidden;
       align-items: center;
       justify-content: center;
       padding: 1rem;
       backdrop-filter: blur(6px);
     }
     #lightbox.open { display: flex; }
-    #lightbox img {
+
+    /* Lightbox stage — clips both images during slide */
+    #lb-stage {
+      position: relative;
+      overflow: hidden;
       width: 90vw;
       max-height: 92svh;
-      height: auto;
       border-radius: 16px;
       box-shadow: 0 0 60px rgba(123,47,255,.5), 0 0 120px rgba(255,94,203,.2);
-      display: block;
-      object-fit: contain;
+      line-height: 0;
     }
+
+    /* Current (visible) image — drives stage height */
+    #lb-img-cur {
+      display: block;
+      width: 100%;
+      height: auto;
+      max-height: 92svh;
+      object-fit: contain;
+      cursor: pointer;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Next image — absolutely fills the stage, starts off-screen */
+    #lb-img-next {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      z-index: 2;
+      transform: translateX(100%);
+      pointer-events: none;
+    }
+
+    /* Close button */
     #lightbox-close {
       position: fixed;
       top: 1.2rem;
@@ -312,8 +341,39 @@
       justify-content: center;
       line-height: 1;
       transition: background .2s;
+      z-index: 2;
     }
     #lightbox-close:hover { background: var(--purple-mid); }
+
+    /* Prev / Next arrows (PC only) */
+    .lb-arrow {
+      position: fixed;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(58,0,94,.85);
+      border: 1px solid var(--border-glow);
+      color: var(--text-main);
+      font-size: 2rem;
+      width: 3rem;
+      height: 3rem;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background .2s;
+      z-index: 2;
+    }
+    .lb-arrow:hover { background: var(--purple-mid); }
+    #lb-prev { left: 1rem; }
+    #lb-next { right: 1rem; }
+
+    @media (max-width: 768px) {
+      .lb-arrow { display: none; }
+      #lb-stage { width: 100vw; max-height: 100svh; border-radius: 0; }
+      #lb-img-cur { max-height: 100svh; }
+      #lightbox { padding: 0; }
+    }
 
     /* ===== Video Section ===== */
     #video {
@@ -562,8 +622,13 @@
 
 <!-- Lightbox -->
 <div id="lightbox" role="dialog" aria-modal="true" aria-label="キャスト画像">
+  <button class="lb-arrow" id="lb-prev" aria-label="前のキャスト">‹</button>
+  <div id="lb-stage">
+    <img id="lb-img-cur" src="" alt="" />
+    <img id="lb-img-next" src="" alt="" aria-hidden="true" />
+  </div>
+  <button class="lb-arrow" id="lb-next" aria-label="次のキャスト">›</button>
   <button id="lightbox-close" aria-label="閉じる">✕</button>
-  <img id="lightbox-img" src="" alt="" />
 </div>
 
 <!-- Stars -->
@@ -643,133 +708,8 @@
       キャスト紹介
     </h2>
     <div class="divider"></div>
-    <!-- =====================================================
-         キャストデータ
-         追加・削除・変更はこの cast-grid 内の .cast-card を編集。
-         画像は images/cast/ に配置。キャラ名は闇堕ち前の通常名のみ表示。
-
-         追加テンプレート:
-         <div class="cast-card reveal">
-           <div class="cast-image">
-             <img src="images/cast/ファイル名.jpg" alt="キャスト名" />
-           </div>
-           <div class="cast-info">
-             <div class="cast-name">キャスト名</div>
-             <div class="cast-chara">キャラ名（通常）</div>
-           </div>
-         </div>
-         ===================================================== -->
-    <div class="cast-grid" id="cast-grid">
-
-      <div class="cast-card reveal">
-        <div class="cast-image">
-          <img src="images/cast/ロア.jpg" alt="ロア" />
-        </div>
-        <div class="cast-info">
-          <div class="cast-name">ロア</div>
-        </div>
-      </div>
-
-      <div class="cast-card reveal">
-        <div class="cast-image">
-          <img src="images/cast/モカ.jpg" alt="モカ" />
-        </div>
-        <div class="cast-info">
-          <div class="cast-name">モカ</div>
-        </div>
-      </div>
-
-      <div class="cast-card reveal">
-        <div class="cast-image">
-          <img src="images/cast/ソルテ.jpg" alt="ソルテ" />
-        </div>
-        <div class="cast-info">
-          <div class="cast-name">ソルテ</div>
-        </div>
-      </div>
-
-      <div class="cast-card reveal">
-        <div class="cast-image">
-          <img src="images/cast/ユウキ・アントレー.jpg" alt="ユウキ・アントレー" onerror="this.closest('.cast-image').innerHTML='<div class=\'cast-image-placeholder\'>🦇</div>'" />
-        </div>
-        <div class="cast-info">
-          <div class="cast-name">ユウキ・アントレー</div>
-        </div>
-      </div>
-
-      <div class="cast-card reveal">
-        <div class="cast-image">
-          <img src="images/cast/ダリア.jpg" alt="ダリア" onerror="this.closest('.cast-image').innerHTML='<div class=\'cast-image-placeholder\'>🦇</div>'" />
-        </div>
-        <div class="cast-info">
-          <div class="cast-name">ダリア</div>
-        </div>
-      </div>
-
-      <div class="cast-card reveal">
-        <div class="cast-image">
-          <img src="images/cast/ヨナ.jpg" alt="ヨナ" onerror="this.closest('.cast-image').innerHTML='<div class=\'cast-image-placeholder\'>🦇</div>'" />
-        </div>
-        <div class="cast-info">
-          <div class="cast-name">ヨナ</div>
-        </div>
-      </div>
-
-      <div class="cast-card reveal">
-        <div class="cast-image">
-          <img src="images/cast/ロサ・ノワール.jpg" alt="ロサ・ノワール" onerror="this.closest('.cast-image').innerHTML='<div class=\'cast-image-placeholder\'>🦇</div>'" />
-        </div>
-        <div class="cast-info">
-          <div class="cast-name">ロサ・ノワール</div>
-        </div>
-      </div>
-
-      <div class="cast-card reveal">
-        <div class="cast-image">
-          <img src="images/cast/ローネ.jpg" alt="ローネ" onerror="this.closest('.cast-image').innerHTML='<div class=\'cast-image-placeholder\'>🦇</div>'" />
-        </div>
-        <div class="cast-info">
-          <div class="cast-name">ローネ</div>
-        </div>
-      </div>
-
-      <div class="cast-card reveal">
-        <div class="cast-image">
-          <img src="images/cast/アニス.jpg" alt="アニス" onerror="this.closest('.cast-image').innerHTML='<div class=\'cast-image-placeholder\'>🦇</div>'" />
-        </div>
-        <div class="cast-info">
-          <div class="cast-name">アニス</div>
-        </div>
-      </div>
-
-      <div class="cast-card reveal">
-        <div class="cast-image">
-          <img src="images/cast/スリジエ・ルクレール.jpg" alt="スリジエ・ルクレール" onerror="this.closest('.cast-image').innerHTML='<div class=\'cast-image-placeholder\'>🦇</div>'" />
-        </div>
-        <div class="cast-info">
-          <div class="cast-name">スリジエ・ルクレール</div>
-        </div>
-      </div>
-
-      <div class="cast-card reveal">
-        <div class="cast-image">
-          <img src="images/cast/聖天天使スカイローズ.jpg" alt="聖天天使スカイローズ" onerror="this.closest('.cast-image').innerHTML='<div class=\'cast-image-placeholder\'>🦇</div>'" />
-        </div>
-        <div class="cast-info">
-          <div class="cast-name">聖天天使スカイローズ</div>
-        </div>
-      </div>
-
-      <div class="cast-card reveal">
-        <div class="cast-image">
-          <img src="images/cast/澄田心.jpg" alt="澄田心" onerror="this.closest('.cast-image').innerHTML='<div class=\'cast-image-placeholder\'>🦇</div>'" />
-        </div>
-        <div class="cast-info">
-          <div class="cast-name">澄田心</div>
-        </div>
-      </div>
-
-    </div>
+    <!-- キャストは data/cast.json から動的に生成されます -->
+    <div class="cast-grid" id="cast-grid"></div>
   </div>
 </section>
 
@@ -937,38 +877,249 @@
     });
   }, { threshold: 0.12 });
 
-  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  /* ===== Cast: JSON load & render ===== */
+  let castData = [];
+  let currentCastIndex = 0;
+
+  async function loadCast() {
+    try {
+      const res = await fetch('data/cast.json');
+      castData = await res.json();
+    } catch(e) {
+      castData = [];
+    }
+    renderCast();
+  }
+
+  function renderCast() {
+    const grid = document.getElementById('cast-grid');
+    grid.innerHTML = '';
+    castData.forEach((cast, i) => {
+      const card = document.createElement('div');
+      card.className = 'cast-card reveal visible';
+      card.innerHTML = `
+        <div class="cast-image">
+          <img src="${cast.image}" alt="${cast.name}"
+               onerror="this.closest('.cast-image').innerHTML='<div class=\\'cast-image-placeholder\\'>🦇</div>'" />
+        </div>
+        <div class="cast-info">
+          <div class="cast-name">${cast.name}</div>
+        </div>`;
+      card.addEventListener('click', () => openLightbox(i));
+      grid.appendChild(card);
+    });
+  }
+
+  loadCast();
 
   /* ===== Lightbox ===== */
-  const lightbox    = document.getElementById('lightbox');
-  const lightboxImg = document.getElementById('lightbox-img');
-  const lbClose     = document.getElementById('lightbox-close');
+  const lightbox   = document.getElementById('lightbox');
+  const lbStage    = document.getElementById('lb-stage');
+  const lbImgCur   = document.getElementById('lb-img-cur');
+  const lbImgNext  = document.getElementById('lb-img-next');
+  const lbClose    = document.getElementById('lightbox-close');
+  const lbPrev     = document.getElementById('lb-prev');
+  const lbNext     = document.getElementById('lb-next');
 
-  function openLightbox(src, alt) {
-    lightboxImg.src = src;
-    lightboxImg.alt = alt;
+  function stageW() { return lbStage.offsetWidth || window.innerWidth; }
+
+  function openLightbox(index) {
+    currentCastIndex = index;
+    const cast = castData[index];
+    lbImgCur.src  = cast.image;
+    lbImgCur.alt  = cast.name;
+    lbImgCur.style.transition  = 'none';
+    lbImgCur.style.transform   = 'translateX(0)';
+    lbImgNext.src  = '';
+    lbImgNext.style.transition = 'none';
+    lbImgNext.style.transform  = 'translateX(100%)';
     lightbox.classList.add('open');
     document.body.style.overflow = 'hidden';
   }
+
   function closeLightbox() {
     lightbox.classList.remove('open');
     document.body.style.overflow = '';
-    lightboxImg.src = '';
+    lbImgCur.src  = '';
+    lbImgNext.src = '';
   }
 
-  // Click cast card to open
-  document.querySelectorAll('.cast-card').forEach(card => {
-    card.addEventListener('click', () => {
-      const img = card.querySelector('.cast-image img');
-      if (img && img.complete && img.naturalWidth > 0) {
-        openLightbox(img.src, img.alt);
-      }
-    });
-  });
+  // 2枚同時スライドアニメーション
+  let lbAnimating = false;
+
+  function slideAnimate(nextIndex, direction) {
+    if (lbAnimating) return;
+    lbAnimating = true;
+
+    const sw   = stageW();
+    const outX = direction === 'next' ? -sw :  sw;
+    const inX  = direction === 'next' ?  sw : -sw;
+    const cast = castData[nextIndex];
+
+    // 次画像を画面外にセット（トランジションなし）
+    lbImgNext.src = cast.image;
+    lbImgNext.alt = cast.name;
+    lbImgNext.style.transition = 'none';
+    lbImgNext.style.transform  = `translateX(${inX}px)`;
+
+    // リフローを強制してからアニメーション開始
+    lbImgNext.getBoundingClientRect();
+
+    lbImgCur.style.transition  = 'transform .25s ease';
+    lbImgCur.style.transform   = `translateX(${outX}px)`;
+    lbImgNext.style.transition = 'transform .25s ease';
+    lbImgNext.style.transform  = 'translateX(0)';
+
+    setTimeout(() => {
+      currentCastIndex = nextIndex;
+      // cur を裏でセンターに戻す（lbImgNext z-index:2 が上に被さっているので非表示）
+      lbImgCur.style.transition = 'none';
+      lbImgCur.style.transform  = 'translateX(0)';
+      // lbImgNext を退場させるコールバック（cur のデコード完了後に呼ぶ）
+      const revealCur = () => {
+        lbImgCur.onload = lbImgCur.onerror = null;
+        lbImgNext.style.transition = 'none';
+        lbImgNext.style.transform  = `translateX(${inX}px)`;
+        lbImgNext.src = '';
+        lbAnimating = false;
+      };
+      lbImgCur.onload  = revealCur;
+      lbImgCur.onerror = revealCur;
+      lbImgCur.src = cast.image;
+      lbImgCur.alt = cast.name;
+      // キャッシュ済みなら即時（onload が発火しない場合の保険）
+      if (lbImgCur.complete) revealCur();
+    }, 260);
+  }
+
+  function showPrev() { slideAnimate((currentCastIndex - 1 + castData.length) % castData.length, 'prev'); }
+  function showNext() { slideAnimate((currentCastIndex + 1) % castData.length, 'next'); }
 
   lbClose.addEventListener('click', closeLightbox);
+  lbPrev.addEventListener('click', e => { e.stopPropagation(); showPrev(); });
+  lbNext.addEventListener('click', e => { e.stopPropagation(); showNext(); });
+  lbImgCur.addEventListener('click', closeLightbox);
   lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+  document.addEventListener('keydown', e => {
+    if (!lightbox.classList.contains('open')) return;
+    if (e.key === 'Escape')     closeLightbox();
+    if (e.key === 'ArrowLeft')  showPrev();
+    if (e.key === 'ArrowRight') showNext();
+  });
+
+  // タッチスワイプ：2枚同時スライド
+  let touchStartX      = 0;
+  let touchStartY      = 0;
+  let swipeDir         = null;
+  let swipePreparedDir = null; // 'next' | 'prev' | null
+  let swipeNextIndex   = -1;
+
+  lightbox.addEventListener('touchstart', e => {
+    if (lbAnimating) return;
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+    swipeDir         = null;
+    swipePreparedDir = null;
+    swipeNextIndex   = -1;
+    lbImgCur.style.transition  = 'none';
+    lbImgNext.style.transition = 'none';
+  }, { passive: true });
+
+  lightbox.addEventListener('touchmove', e => {
+    if (!lightbox.classList.contains('open') || lbAnimating) return;
+    const dx = e.touches[0].clientX - touchStartX;
+    const dy = e.touches[0].clientY - touchStartY;
+
+    if (swipeDir === null && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) {
+      swipeDir = Math.abs(dx) >= Math.abs(dy) ? 'h' : 'v';
+    }
+    if (swipeDir !== 'h') return;
+
+    const sw = stageW();
+    const dxDir = dx <= 0 ? 'next' : 'prev';
+
+    // スワイプ方向が変わったら次画像をセットし直す
+    if (swipePreparedDir !== dxDir) {
+      swipePreparedDir = dxDir;
+      if (dxDir === 'next') {
+        swipeNextIndex = (currentCastIndex + 1) % castData.length;
+        lbImgNext.src = castData[swipeNextIndex].image;
+        lbImgNext.alt = castData[swipeNextIndex].name;
+        lbImgNext.style.transform = `translateX(${sw}px)`;
+      } else {
+        swipeNextIndex = (currentCastIndex - 1 + castData.length) % castData.length;
+        lbImgNext.src = castData[swipeNextIndex].image;
+        lbImgNext.alt = castData[swipeNextIndex].name;
+        lbImgNext.style.transform = `translateX(${-sw}px)`;
+      }
+    }
+
+    // 2枚同時に指に追従
+    lbImgCur.style.transform  = `translateX(${dx}px)`;
+    lbImgNext.style.transform = dxDir === 'next'
+      ? `translateX(${sw + dx}px)`
+      : `translateX(${-sw + dx}px)`;
+  }, { passive: true });
+
+  lightbox.addEventListener('touchend', e => {
+    if (!lightbox.classList.contains('open') || lbAnimating) return;
+    const dx = e.changedTouches[0].clientX - touchStartX;
+
+    if (swipeDir === 'h' && Math.abs(dx) > 50 && swipePreparedDir !== null) {
+      // 閾値超え：コミット
+      lbAnimating = true;
+      const sw   = stageW();
+      const outX = dx < 0 ? -sw :  sw;
+      const inX  = dx < 0 ?  sw : -sw;
+      const finalIndex = swipeNextIndex;
+      const finalCast  = castData[finalIndex];
+
+      lbImgCur.style.transition  = 'transform .2s ease';
+      lbImgCur.style.transform   = `translateX(${outX}px)`;
+      lbImgNext.style.transition = 'transform .2s ease';
+      lbImgNext.style.transform  = 'translateX(0)';
+
+      setTimeout(() => {
+        currentCastIndex = finalIndex;
+        // cur を裏でセンターに戻す（lbImgNext が上に被さっているので非表示）
+        lbImgCur.style.transition = 'none';
+        lbImgCur.style.transform  = 'translateX(0)';
+        // cur のデコード完了後に lbImgNext を退場
+        const revealCur = () => {
+          lbImgCur.onload = lbImgCur.onerror = null;
+          lbImgNext.style.transition = 'none';
+          lbImgNext.style.transform  = `translateX(${inX}px)`;
+          lbImgNext.src = '';
+          swipePreparedDir = null;
+          swipeNextIndex   = -1;
+          lbAnimating = false;
+        };
+        lbImgCur.onload  = revealCur;
+        lbImgCur.onerror = revealCur;
+        lbImgCur.src = finalCast.image;
+        lbImgCur.alt = finalCast.name;
+        if (lbImgCur.complete) revealCur();
+      }, 220);
+    } else {
+      // 閾値未満：スナップバック
+      lbImgCur.style.transition = 'transform .2s ease';
+      lbImgCur.style.transform  = 'translateX(0)';
+      if (swipePreparedDir !== null) {
+        const sw   = stageW();
+        const backX = swipePreparedDir === 'next' ? sw : -sw;
+        lbImgNext.style.transition = 'transform .2s ease';
+        lbImgNext.style.transform  = `translateX(${backX}px)`;
+        setTimeout(() => {
+          lbImgNext.src    = '';
+          swipePreparedDir = null;
+          swipeNextIndex   = -1;
+        }, 220);
+      }
+    }
+  }, { passive: true });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 </script>
 </body>
 </html>
