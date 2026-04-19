@@ -1,21 +1,102 @@
 [
-  { "name": "ロア",               "image": "images/cast/ロア.jpg" },
-  { "name": "モカ",               "image": "images/cast/モカ.jpg" },
-  { "name": "ソルテ",             "image": "images/cast/ソルテ.jpg" },
-  { "name": "ユウキ・アントレー", "image": "images/cast/ユウキ・アントレー.jpg" },
-  { "name": "ダリア",             "image": "images/cast/ダリア.jpg" },
-  { "name": "ヨナ",               "image": "images/cast/ヨナ.jpg" },
-  { "name": "ロサ・ノワール",     "image": "images/cast/ロサ・ノワール.jpg" },
-  { "name": "ローネ",             "image": "images/cast/ローネ.jpg" },
-  { "name": "アニス",             "image": "images/cast/アニス.jpg" },
-  { "name": "スリジエ・ルクレール", "image": "images/cast/スリジエ・ルクレール.jpg" },
-  { "name": "聖天天使スカイローズ", "image": "images/cast/聖天天使スカイローズ.jpg" },
-  { "name": "雪",             "image": "images/cast/雪.jpg" },
-  { "name": "ましろ",             "image": "images/cast/ましろ.jpg" },
-  { "name": "加瀬みらい",             "image": "images/cast/加瀬みらい.jpg" },
-  { "name": "鍵宮いとは",             "image": "images/cast/鍵宮いとは.jpg" },
-  { "name": "エリシア",             "image": "images/cast/エリシア.jpg" },
-  { "name": "ウルメリア",             "image": "images/cast/ウルメリア.jpg" },
-  { "name": "ミリネ",             "image": "images/cast/ミリネ.jpg" },
-  { "name": "アデル",             "image": "images/cast/アデル.jpg" }
+  {
+    "order": 10,
+    "name": "\u30ed\u30a2",
+    "image": "images/cast/010_\u30ed\u30a2.jpg"
+  },
+  {
+    "order": 20,
+    "name": "\u30e2\u30ab",
+    "image": "images/cast/020_\u30e2\u30ab.jpg"
+  },
+  {
+    "order": 30,
+    "name": "\u30bd\u30eb\u30c6",
+    "image": "images/cast/030_\u30bd\u30eb\u30c6.jpg"
+  },
+  {
+    "order": 40,
+    "name": "\u30e6\u30a6\u30ad\u30fb\u30a2\u30f3\u30c8\u30ec\u30fc",
+    "image": "images/cast/040_\u30e6\u30a6\u30ad\u30fb\u30a2\u30f3\u30c8\u30ec\u30fc.jpg"
+  },
+  {
+    "order": 50,
+    "name": "\u30c0\u30ea\u30a2",
+    "image": "images/cast/050_\u30c0\u30ea\u30a2.jpg"
+  },
+  {
+    "order": 60,
+    "name": "\u30e8\u30ca",
+    "image": "images/cast/060_\u30e8\u30ca.jpg"
+  },
+  {
+    "order": 70,
+    "name": "\u30ed\u30b5\u30fb\u30ce\u30ef\u30fc\u30eb",
+    "image": "images/cast/070_\u30ed\u30b5\u30fb\u30ce\u30ef\u30fc\u30eb.jpg"
+  },
+  {
+    "order": 80,
+    "name": "\u30ed\u30fc\u30cd",
+    "image": "images/cast/080_\u30ed\u30fc\u30cd.jpg"
+  },
+  {
+    "order": 90,
+    "name": "\u30a2\u30cb\u30b9",
+    "image": "images/cast/090_\u30a2\u30cb\u30b9.jpg"
+  },
+  {
+    "order": 100,
+    "name": "\u30b9\u30ea\u30b8\u30a8\u30fb\u30eb\u30af\u30ec\u30fc\u30eb",
+    "image": "images/cast/100_\u30b9\u30ea\u30b8\u30a8\u30fb\u30eb\u30af\u30ec\u30fc\u30eb.jpg"
+  },
+  {
+    "order": 110,
+    "name": "\u8056\u5929\u5929\u4f7f\u30b9\u30ab\u30a4\u30ed\u30fc\u30ba",
+    "image": "images/cast/110_\u8056\u5929\u5929\u4f7f\u30b9\u30ab\u30a4\u30ed\u30fc\u30ba.jpg"
+  },
+  {
+    "order": 120,
+    "name": "\u96ea",
+    "image": "images/cast/120_\u96ea.jpg"
+  },
+  {
+    "order": 130,
+    "name": "\u307e\u3057\u308d",
+    "image": "images/cast/130_\u307e\u3057\u308d.jpg"
+  },
+  {
+    "order": 140,
+    "name": "\u52a0\u702c\u307f\u3089\u3044",
+    "image": "images/cast/140_\u52a0\u702c\u307f\u3089\u3044.jpg"
+  },
+  {
+    "order": 150,
+    "name": "\u9375\u5bae\u3044\u3068\u306f",
+    "image": "images/cast/150_\u9375\u5bae\u3044\u3068\u306f.jpg"
+  },
+  {
+    "order": 160,
+    "name": "\u30a8\u30ea\u30b7\u30a2",
+    "image": "images/cast/160_\u30a8\u30ea\u30b7\u30a2.jpg"
+  },
+  {
+    "order": 170,
+    "name": "\u30a6\u30eb\u30e1\u30ea\u30a2",
+    "image": "images/cast/170_\u30a6\u30eb\u30e1\u30ea\u30a2.jpg"
+  },
+  {
+    "order": 180,
+    "name": "\u30df\u30ea\u30cd",
+    "image": "images/cast/180_\u30df\u30ea\u30cd.jpg"
+  },
+  {
+    "order": 190,
+    "name": "\u30a2\u30c7\u30eb",
+    "image": "images/cast/190_\u30a2\u30c7\u30eb.jpg"
+  },
+  {
+    "order": 200,
+    "name": "\u6f84\u7530\u5fc3",
+    "image": "images/cast/200_\u6f84\u7530\u5fc3.jpg"
+  }
 ]

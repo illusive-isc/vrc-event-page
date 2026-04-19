@@ -1,0 +1,99 @@
+name: Deploy GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "index.html"
+      - "data/index.css"
+      - "data/index.js"
+      - "data/cast.json"
+      - "images/cast/**"
+      - "images/logo.png"
+      - "images/title.png"
+      - "images/cast-group.jpg"
+      - "images/x-logo.svg"
+      - "manifest.webmanifest"
+      - "robots.txt"
+      - "sitemap.xml"
+      - ".github/workflows/build-docs.yml"
+      - "scripts/generate-cast-json.js"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      SITE_URL: ${{ vars.SITE_URL != '' && vars.SITE_URL || format('https://{0}.github.io/{1}', github.repository_owner, github.event.repository.name) }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Generate cast.json
+        run: |
+          node scripts/generate-cast-json.js
+
+      - name: Prepare site directory
+        run: |
+          rm -rf docs
+          mkdir -p docs/data
+          mkdir -p docs/images
+          mkdir -p docs/images/cast
+          cp index.html docs/
+          cp manifest.webmanifest docs/
+          cp robots.txt docs/
+          cp sitemap.xml docs/
+          cp data/index.css docs/data/
+          cp data/index.js docs/data/
+          cp data/cast.json docs/data/
+          cp images/logo.png docs/images/
+          cp images/title.png docs/images/
+          cp images/cast-group.jpg docs/images/
+          cp images/x-logo.svg docs/images/
+          cp images/cast/*.jpg docs/images/cast/
+          python - <<'PY'
+          from pathlib import Path
+          import os
+
+          site_url = os.environ["SITE_URL"].rstrip("/")
+          for relative_path in ("docs/index.html", "docs/manifest.webmanifest", "docs/robots.txt", "docs/sitemap.xml"):
+              path = Path(relative_path)
+              path.write_text(
+                  path.read_text(encoding="utf-8").replace("__SITE_URL__", site_url),
+                  encoding="utf-8",
+              )
+          PY
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
